@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import TreeListStore from '../stores/TreeListStore.jsx';
-import TreeView from 'treeview-react-bootstrap';
+import TreeView from 'react-treeview';
 
 function getAppState() {
   return {
-    tree: TreeListStore.getTree(),
+    tree: TreeListStore.getTree()
   };
 }
 
@@ -26,11 +26,29 @@ class TreeList extends Component {
     return (
       <div>
         {
-          <TreeView data={this.state.tree} />
+          drawTree(this.state.tree)
         }
       </div>
     );
   }
+}
+
+function drawTree(tree){
+    return tree.map((node, i) => {
+    console.log(node);
+    const type = node.type;
+    const label = 
+    <a href="#">
+      <span className="node">{type}</span>
+    </a>;
+    return (
+      <TreeView key={type + '|' + i} nodeLabel={label} defaultCollapsed={false}>
+      {
+        drawTree(node.nodes)
+      }
+      </TreeView>
+    );
+  })
 }
 
 export default TreeList;

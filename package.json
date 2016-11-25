@@ -4,13 +4,13 @@
   "private": true,
   "author": "SoftLeader",
   "dependencies": {
+    "es6bindall": "0.0.7",
     "events": "^1.1.1",
     "flux": "^2.1.1",
     "react": "^15.3.2",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.3.2",
-    "treeview-react-bootstrap": "^0.4.6",
-    "es6bindall": "0.0.7",
+    "react-treeview": "^0.4.6",
     "request": "^2.75.0"
   },
   "devDependencies": {

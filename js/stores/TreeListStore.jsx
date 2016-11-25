@@ -25,8 +25,12 @@ class TreeListStore extends EventEmitter {
             console.log("index " + i + ", value: " + v);
             if(v.trim().length == 0) {
                 treeArr = null;
+                return;
             }
-            a[i] = v.substr(v.indexOf("=") + 1);
+            a[i] = {
+                arr : v.substr(v.indexOf("=") + 1),
+                dn : treeArr.slice(i).toString()
+            };
         })
         if(treeArr){
             treeArr.reverse();
@@ -34,8 +38,8 @@ class TreeListStore extends EventEmitter {
         return treeArr;
     }
 
-    // 將 tree 的陣列轉換成 treeview-react-bootstrap 規定的物件格式後放入 store.tree 陣列
-    processTreeArray(treeArr) {
+    // 將 tree 的陣列轉換成自訂的物件格式後放入 store.tree 陣列
+    transformTreeArrayToObject(treeArr) {
         // 若原本 store.tree 陣列裡面沒有任何資料，則將此次輸入 tree 陣列放入
         if (store.tree.length == 0) {
             var obj = this.createTreeObj(treeArr);
@@ -52,8 +56,8 @@ class TreeListStore extends EventEmitter {
                 // console.log(treeArr[i]);
                 var isMatch = false;
                 for (var j = 0; j < tempArr.length; j++) {
-                    // console.log("  " + tempArr[j].text);
-                    if (tempArr[j].text === treeArr[i]) {
+                    // console.log("  " + tempArr[j].type);
+                    if (tempArr[j].type === treeArr[i].arr) {
                         tempArr = tempArr[j].nodes;
                         isMatch = true;
                         break;
@@ -76,14 +80,16 @@ class TreeListStore extends EventEmitter {
     createTreeObj(treeArr) {
         if(treeArr && treeArr.length > 0) {
             var obj = new Object();
-            obj.text = treeArr[0];
+            obj.type = treeArr[0].arr;
+            obj.dn = treeArr[0].dn;
             obj.nodes = [];
 
             if (treeArr.length > 1) {
                 var tempObj = obj;
                 for (var i = 1; i < treeArr.length; i++) {
                     var childObj = new Object();
-                    childObj.text = treeArr[i];
+                    childObj.type = treeArr[i].arr;
+                    childObj.dn = treeArr[i].dn;
                     childObj.nodes = [];
                     tempObj.nodes.push(childObj);
                     tempObj = childObj;
@@ -107,7 +113,7 @@ AppDispatcher.register(payload => {
 
 	switch(action.eventName) {
 		case TreeEvents.TREE_LIST:
-			treeListStore.processTreeArray(treeListStore.processDnToTreeArray(action.context));
+			treeListStore.transformTreeArrayToObject(treeListStore.processDnToTreeArray(action.context));
             treeListStore.emit(TreeEvents.TREE_LIST);
 			break;
 		default:
