@@ -4,7 +4,6 @@ import { EventEmitter } from 'events';
 
 const store = {
     tree: [],
-    editing: false,
 };
 
 class TreeListStore extends EventEmitter {
@@ -15,6 +14,10 @@ class TreeListStore extends EventEmitter {
         this.removeListener(TreeEvents.TREE_LIST, callback);
     }
 
+    addTree(dn) {
+        this.transformTreeArrayToObject(this.processDnToTreeArray(dn));
+    }
+
     /* 將 LDAP 的 DN 字串切成陣列，並且拿掉 RDN，只留 name，再從 domain 大的排到小
         ex: DN:uid=137,organizationName=technology department,dc=softleader,dc=com
         => [com,softleader,technology department,137]
@@ -22,7 +25,7 @@ class TreeListStore extends EventEmitter {
     processDnToTreeArray(dn) {
         var treeArr = dn.split(",");
         treeArr.forEach((v, i, a) => {
-            console.log("index " + i + ", value: " + v);
+            // console.log("index " + i + ", value: " + v);
             if(v.trim().length == 0) {
                 treeArr = null;
                 return;
@@ -73,7 +76,6 @@ class TreeListStore extends EventEmitter {
             }
 
         }
-        //store.dns.push();
     }
 
      // 將 tree 陣列轉換成 treeview-react-bootstrap 規定的物件格式
@@ -99,6 +101,19 @@ class TreeListStore extends EventEmitter {
             return obj;
         }
     }
+
+    deleteTree(treeArr, dn) {
+        for(var i = 0; i < treeArr.length; i++) {
+            if(treeArr[i].nodes.length > 0) {
+                this.deleteTree(treeArr[i].nodes, dn);
+            }
+            if(treeArr[i].dn == dn) {
+                treeArr.splice(i, 1);
+            }
+        }
+        // console.log(store.tree);
+    }
+
     getTree() {
         return store.tree;
     }
@@ -112,10 +127,13 @@ AppDispatcher.register(payload => {
 	const action = payload.action;
 
 	switch(action.eventName) {
-		case TreeEvents.TREE_LIST:
-			treeListStore.transformTreeArrayToObject(treeListStore.processDnToTreeArray(action.context));
+		case TreeEvents.TREE_ADD:
+            treeListStore.addTree(action.context);
             treeListStore.emit(TreeEvents.TREE_LIST);
-			break;
+            break;
+        case TreeEvents.TREE_DELETE:
+            treeListStore.deleteTree(store.tree, action.context);
+            treeListStore.emit(TreeEvents.TREE_LIST);
 		default:
 			break;
 	}

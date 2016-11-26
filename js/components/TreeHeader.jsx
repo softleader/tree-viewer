@@ -1,27 +1,52 @@
 import React, { Component } from 'react';
 import { TreeAction } from '../actions/TreeAction.jsx';
+import TreeHeaderStore from '../stores/TreeHeaderStore.jsx';
+import es6BindAll from "es6bindall";
 
 class TreeHeader extends Component {
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
-    this.onAdd = this.onAdd.bind(this);
+    es6BindAll(this, [
+      "onChange", 
+      "handleInputChange", 
+      "onAdd",
+      "onDelete"
+    ]);
     this.state = {
       text: '',
-      editing: false,
     };
   }
-  onChange(event) {
+
+  componentDidMount() {
+    TreeHeaderStore.addChangeListener(this.onChange);
+  }
+
+  onChange() {
+    this.setState({
+      text: TreeHeaderStore.getDn(),
+    });
+  }
+  
+  handleInputChange(event) {
     this.setState({
       text: event.target.value,
     });
   }
+
   onAdd() {
     TreeAction.addDN(this.state.text);
     this.setState({
       text: '',
     });
   }
+
+  onDelete() {
+    TreeAction.deleteDN(this.state.text);
+    this.setState({
+      text: '',
+    });
+  }
+
   render() {
     return (
       <div>
@@ -32,10 +57,9 @@ class TreeHeader extends Component {
             type="text"
             autoFocus
             placeholder="請輸入 DN"
-            onChange={this.onChange} />
-          <button onClick={this.onAdd}>
-            送出
-          </button>
+            onChange={this.handleInputChange} />
+          <button onClick={this.onAdd}>新增</button>
+          <button onClick={this.onDelete}>刪除</button>
         </div>
       </div>
     );
