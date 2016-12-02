@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import TreeHeader from './components/TreeHeader.jsx';
 import TreeList from './components/TreeList.jsx';
 
-class App extends React.Component {
+window.react = {};
+
+class TreeApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -18,4 +20,6 @@ class App extends React.Component {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+react.renderTree = function(){
+  ReactDOM.render(<TreeApp />, document.getElementById('showTree')); 
+};

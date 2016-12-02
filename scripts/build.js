@@ -20,7 +20,7 @@ var cfg = config();
 
 cfg.output = {
     path: path.resolve(__dirname, '../build'),
-    filename: 'image-viewer.js'
+    filename: 'tree-viewer.js'
 };
 
 webpack(cfg).run(function(err, stats) {
@@ -38,7 +38,7 @@ var minCfg = config();
 
 minCfg.output = {
     path: path.resolve(__dirname, '../build'),
-    filename: 'image-viewer.min.js'
+    filename: 'tree-viewer.min.js'
 };
 
 minCfg.plugins.unshift(
