@@ -89,7 +89,7 @@
 	<div id="showTree"></div>
 	    
 	<script type="text/javascript">
-		react.renderTree( );
+		react.renderTree();
 	</script>
 </body>
 ```
