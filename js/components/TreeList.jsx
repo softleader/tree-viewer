@@ -49,7 +49,7 @@ class TreeList extends Component {
                   </ListGroupItem>
                       
       return (
-        <TreeView key={type + '|' + i} nodeLabel={label} defaultCollapsed={false}>
+        <TreeView key={type + '|' + i} nodeLabel={label} defaultCollapsed={true}>
         {
           this.drawTree(node.nodes)
         }
