@@ -79,6 +79,7 @@ class TreeListStore extends EventEmitter {
     }
 
      // 將 tree 陣列轉換成 treeview-react-bootstrap 規定的物件格式
+     // type: 名字; dn: 完整路徑; nodes: 子節點
     createTreeObj(treeArr) {
         if(treeArr && treeArr.length > 0) {
             var obj = new Object();

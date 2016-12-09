@@ -82,7 +82,7 @@
 
 ### 啟用 
 
-使用`react.renderTree(...)`來載入Tree
+使用`react.renderTree()`來載入Tree
 
 ```html
 <body>

@@ -27,7 +27,12 @@
 }
 
 .tree-view_arrow:after {
-  content: '▾';
+  content: '▼';
+}
+
+.list-group-display {
+  display: inline-block;
+  width: 90%; 
 }
 
 /* rotate the triangle to close it */
