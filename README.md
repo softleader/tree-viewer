@@ -73,7 +73,7 @@
     <title>...</title>
     <link rel="stylesheet" type="text/css" href="bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="react-treeview.css">
-    <script type="text/javascript" src="image-viewer.js"></script>
+    <script type="text/javascript" src="tree-viewer.js"></script>
   </head>
 
 	...
