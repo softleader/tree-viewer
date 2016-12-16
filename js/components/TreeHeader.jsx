@@ -7,6 +7,7 @@ import FormGroup from 'react-bootstrap/lib/FormGroup';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import Button from 'react-bootstrap/lib/Button';
 
+
 class TreeHeader extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +18,7 @@ class TreeHeader extends Component {
       "onDelete"
     ]);
     this.state = {
-      text: '',
+      dn: '',
     };
   }
   
@@ -27,37 +28,41 @@ class TreeHeader extends Component {
 
   onChange() {
     this.setState({
-      text: TreeHeaderStore.getDn(),
+      dn: TreeHeaderStore.getDn(),
     });
   }
   
   handleInputChange(event) {
     this.setState({
-      text: event.target.value,
+      dn: event.target.value,
     });
   }
 
   onAdd() {
-    TreeAction.addDN(this.state.text);
-    this.setState({
-      text: '',
-    });
+      let context = this.props.context;
+      context.dn = this.state.dn;
+      TreeAction.addDN(context);
+      this.setState({
+          dn: '',
+      });
   }
 
   onDelete() {
-    TreeAction.deleteDN(this.state.text);
+    let context = this.props.context;
+    context.dn = this.state.dn;
+    TreeAction.deleteDN(context);
     this.setState({
-      text: '',
+      dn: '',
     });
   }
 
   render() {
     return (
       <div>
-        <h1>{this.props.name}</h1>
+        <h1>{this.props.context.name}</h1>
         <div>
         <FormGroup>
-          <FormControl value={this.state.text} type="text" bsSize="sm"
+          <FormControl value={this.state.dn} type="text" bsSize="sm"
             autoFocus placeholder="請輸入 DN" onChange={this.handleInputChange} />
         </FormGroup>
         <ButtonToolbar>

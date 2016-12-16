@@ -3,6 +3,7 @@ var WebpackDevServer = require("webpack-dev-server");
 var config = require("../webpack.config");
 var fs = require("fs");
 var path = require("path");
+var bodyParser = require('webpack-body-parser');
 
 var port = process.env.PORT || 3000;
 var host = process.env.HOST || 'localhost';
@@ -33,14 +34,22 @@ var server = new WebpackDevServer(compiler, {
 		// app.get('/some/path', function(req, res) {
 		//   res.json({ custom: 'response' });
 		// });
-		// app.get('/test/images', function(req, res) {
-		// 	fs.readFile("./public/images/DisplayOrder1_N01371.zip", function(err, data) {
-		// 		if (err) throw err;
-		// 		res.set('content-type','text/plain; charset=x-user-defined');
-		// 		res.write(data);
-		// 		res.end();
-		// 	});
-		// });
+		var jsonParser = bodyParser.json();
+
+		app.post('/test', jsonParser, function(req, res) {
+			if (req.body == null) return res.sendStatus(400);
+			req.body.message = "store data success";
+			console.log(req.body);
+			res.send(req.body);
+		});
+		
+		app.delete('/test', jsonParser, function(req, res) {
+			if (req.body == null) return res.sendStatus(400);
+			req.body.message = "delete data success";
+			req.body.isDelete = true;
+			console.log(req.body);
+			res.send(req.body);
+		});
 	},
 	quiet: true,
 	publicPath:  '/js/',

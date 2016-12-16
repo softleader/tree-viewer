@@ -13,13 +13,14 @@ class TreeApp extends React.Component {
   render() {
     return (
       <div>
-        <TreeHeader />
+        {console.log(this.props.context)}
+        <TreeHeader context = {this.props.context} />
         <TreeList />
       </div>
     );
   }
 }
 
-react.renderTree = function(){
-  ReactDOM.render(<TreeApp />, document.getElementById('showTree')); 
+react.renderTree = function(contextObj){
+  ReactDOM.render(<TreeApp context = {contextObj} />, document.getElementById('showTree')); 
 };

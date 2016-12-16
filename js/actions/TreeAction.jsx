@@ -16,10 +16,10 @@ export const TreeAction = {
     });
   },
 
-  displayDN(context) {
+  displayDN(dn) {
     AppDispatcher.handleViewAction({
       eventName: TreeEvents.DN_DISPLAY,
-      context: context
+      dn: dn
     });
   },
 };

@@ -32,7 +32,7 @@ AppDispatcher.register(payload => {
 
 	switch(action.eventName) {
 		case TreeEvents.DN_DISPLAY:
-            treeHeaderStore.setDn(action.context);
+            treeHeaderStore.setDn(action.dn);
             treeHeaderStore.emit(TreeEvents.DN_DISPLAY);
             break;
 		default:
