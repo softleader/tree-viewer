@@ -82,14 +82,14 @@
 
 ### 啟用 
 
-使用`react.renderTree()`來載入Tree
+使用`react.renderTree(...)`來載入Tree
 
 ```html
 <body>
 	<div id="showTree"></div>
 	    
 	<script type="text/javascript">
-		react.renderTree();
+		react.renderTree({contextObj});
 	</script>
 </body>
 ```

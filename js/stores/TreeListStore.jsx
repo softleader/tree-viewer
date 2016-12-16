@@ -47,7 +47,7 @@ class TreeListStore extends EventEmitter {
                 return;
             }
             a[i] = {
-                arr: v.substr(v.indexOf("=") + 1),
+                name: v.substr(v.indexOf("=") + 1),
                 dn: treeArr.slice(i).toString()
             };
         })
@@ -72,11 +72,9 @@ class TreeListStore extends EventEmitter {
             var tempArr = store.tree;
             var i;
             for (i = 0; i < treeArr.length; i++) {
-                // console.log(treeArr[i]);
                 var isMatch = false;
                 for (var j = 0; j < tempArr.length; j++) {
-                    // console.log("  " + tempArr[j].type);
-                    if (tempArr[j].type === treeArr[i].arr) {
+                    if (tempArr[j].type === treeArr[i].name) {
                         tempArr = tempArr[j].nodes;
                         isMatch = true;
                         break;
@@ -99,7 +97,7 @@ class TreeListStore extends EventEmitter {
     createTreeObj(treeArr) {
         if (treeArr && treeArr.length > 0) {
             var obj = new Object();
-            obj.type = treeArr[0].arr;
+            obj.type = treeArr[0].name;
             obj.dn = treeArr[0].dn;
             obj.nodes = [];
 
@@ -107,7 +105,7 @@ class TreeListStore extends EventEmitter {
                 var tempObj = obj;
                 for (var i = 1; i < treeArr.length; i++) {
                     var childObj = new Object();
-                    childObj.type = treeArr[i].arr;
+                    childObj.type = treeArr[i].name;
                     childObj.dn = treeArr[i].dn;
                     childObj.nodes = [];
                     tempObj.nodes.push(childObj);
@@ -128,7 +126,7 @@ class TreeListStore extends EventEmitter {
             data: JSON.stringify({dn: context.dn}),
             success: function (data, textStatus, jqXHR) {
                 if(data.isDelete) {
-                    this.removeTree(data.dn);
+                    this.removeTree(store.tree, data.dn);
                     this.emit(TreeEvents.TREE_LIST);
                 }
             }.bind(this),
@@ -138,11 +136,10 @@ class TreeListStore extends EventEmitter {
         });
     }
 
-    removeTree(dn) {
-        let treeArr = store.tree;
+    removeTree(treeArr, dn) {
         for (var i = 0; i < treeArr.length; i++) {
             if (treeArr[i].nodes.length > 0) {
-                this.deleteTree(treeArr[i].nodes, dn);
+                this.removeTree(treeArr[i].nodes, dn);
             }
             if (treeArr[i].dn == dn) {
                 treeArr.splice(i, 1);
@@ -165,7 +162,6 @@ AppDispatcher.register(payload => {
 
     switch (action.eventName) {
         case TreeEvents.TREE_ADD:
-            console.log(action.context);
             treeListStore.addTree(action.context);
             break;
         case TreeEvents.TREE_DELETE:
