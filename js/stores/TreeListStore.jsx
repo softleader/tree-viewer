@@ -40,21 +40,16 @@ class TreeListStore extends EventEmitter {
      */
     processDnToTreeArray(dn) {
         var treeArr = dn.split(",");
-        treeArr.forEach((v, i, a) => {
-            // console.log("index " + i + ", value: " + v);
+        return treeArr.map((v, i, a) => {
             if (v.trim().length == 0) {
-                treeArr = null;
-                return;
+                return null;
+            } else {
+                return v = {
+                    name: v.substr(v.indexOf("=") + 1),
+                    dn: treeArr.slice(i).toString()
+                };
             }
-            a[i] = {
-                name: v.substr(v.indexOf("=") + 1),
-                dn: treeArr.slice(i).toString()
-            };
-        })
-        if (treeArr) {
-            treeArr.reverse();
-        }
-        return treeArr;
+        }).reverse();
     }
 
     // 將 tree 的陣列轉換成自訂的物件格式後放入 store.tree 陣列
@@ -70,25 +65,21 @@ class TreeListStore extends EventEmitter {
         // 比對到不同的再產生新物件放入
         else if (treeArr) {
             var tempArr = store.tree;
-            var i;
-            for (i = 0; i < treeArr.length; i++) {
-                var isMatch = false;
+            // 已存在的陣列 match 到傳入的陣列第幾層
+            var level;
+            for (var i = 0; i < treeArr.length; i++) {
                 for (var j = 0; j < tempArr.length; j++) {
-                    if (tempArr[j].type === treeArr[i].name) {
+                    if (tempArr[j].dn === treeArr[i].dn) {
                         tempArr = tempArr[j].nodes;
-                        isMatch = true;
+                        level = i;
                         break;
                     }
                 }
-                if (!isMatch) {
-                    break;
-                }
             }
-            var obj = this.createTreeObj(treeArr.slice(i));
+            var obj = this.createTreeObj(treeArr.slice(level + 1));
             if (obj) {
                 tempArr.push(obj);
             }
-
         }
     }
 
@@ -125,7 +116,7 @@ class TreeListStore extends EventEmitter {
             type: 'DELETE',
             data: JSON.stringify({dn: context.dn}),
             success: function (data, textStatus, jqXHR) {
-                if(data.isDelete) {
+                if (data.isDelete) {
                     this.removeTree(store.tree, data.dn);
                     this.emit(TreeEvents.TREE_LIST);
                 }
