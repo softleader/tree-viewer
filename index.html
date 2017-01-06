@@ -17,7 +17,14 @@
     </div>
     <script type="text/javascript" src="js/bundle.js"></script>
     <script src="http://localhost:3000/webpack-dev-server.js"></script>
-    <script>react.renderTree({url: "http://localhost:3000/test", name: "TREE"});</script>
+    <script>
+        react.renderTree({
+            initUrl: "http://localhost:3000/findAll",
+            url: "http://localhost:3000/test",
+            name: "TREE",
+            dn: "dc=softleader,dc=com"
+        });
+    </script>
 </body>
 
 </html>

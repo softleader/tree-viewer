@@ -35,6 +35,24 @@ var server = new WebpackDevServer(compiler, {
 		//   res.json({ custom: 'response' });
 		// });
 		var jsonParser = bodyParser.json();
+		
+		app.get('/findAll', jsonParser, function(req, res) {
+			if (req.body == null) return res.sendStatus(400);
+			req.body.message = "findAll data success";
+			req.body.dns = ['uid=137,organizationName=technology department,dc=softleader,dc=com'
+			,'uid=138,organizationName=technology department,dc=softleader,dc=com'
+			,'uid=138,organizationName=technology department,dc=softleader,dc=com1'
+			,'uid=139,organizationName=technology department,dc=softleader,dc=com'];
+			res.send(req.body);
+		});
+
+		app.get('/test', jsonParser, function(req, res) {
+			if (req.body == null) return res.sendStatus(400);
+			req.body.message = "select data success";
+			req.body.dns = ['1,'+req.query.dn, '2,'+req.query.dn, '3,'+req.query.dn];
+			console.log(req.body);
+			res.send(req.body);
+		});
 
 		app.post('/test', jsonParser, function(req, res) {
 			if (req.body == null) return res.sendStatus(400);

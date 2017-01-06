@@ -1,25 +1,40 @@
 import AppDispatcher from '../dispatcher/AppDispatcher.jsx';
-import { TreeEvents } from '../constants/Events.jsx';
+import {TreeEvents} from '../constants/Events.jsx';
 
 export const TreeAction = {
-  addDN(context) {
-    AppDispatcher.handleViewAction({
-      eventName: TreeEvents.TREE_ADD,
-      context: context
-    });
-  },
+    initTree(context) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.TREE_INIT,
+            context: context
+        });
+    },
 
-  deleteDN(context) {
-    AppDispatcher.handleViewAction({
-      eventName: TreeEvents.TREE_DELETE,
-      context: context
-    });
-  },
+    addDN(dn) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.TREE_ADD,
+            dn: dn
+        });
+    },
 
-  displayDN(dn) {
-    AppDispatcher.handleViewAction({
-      eventName: TreeEvents.DN_DISPLAY,
-      dn: dn
-    });
-  },
+    deleteDN(dn) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.TREE_DELETE,
+            dn: dn
+        });
+    },
+
+    displayDN(dn) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.DN_DISPLAY,
+            dn: dn
+        });
+    },
+
+    dropDownsInit(dn) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.DROPDOWNS,
+            dn: dn
+        });
+    },
+
 };

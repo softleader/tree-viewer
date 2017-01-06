@@ -3,7 +3,7 @@ import {TreeEvents} from '../constants/Events.jsx';
 import {EventEmitter} from 'events';
 
 const store = {
-    dn: ""
+    dn: ''
 };
 
 class TreeHeaderStore extends EventEmitter {

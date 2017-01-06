@@ -1,16 +1,10 @@
 import React, {Component} from 'react';
-import TreeListStore from '../stores/TreeListStore.jsx';
+import TreeLoaderStore from '../stores/TreeLoaderStore.jsx';
 import TreeView from 'react-treeview';
 import {TreeAction} from '../actions/TreeAction.jsx';
 import es6BindAll from "es6bindall";
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
 
-
-function getState() {
-    return {
-        tree: TreeListStore.getTree()
-    };
-}
 
 class TreeList extends Component {
     constructor(props) {
@@ -18,6 +12,7 @@ class TreeList extends Component {
         es6BindAll(this, [
             "onChange",
             "drawTree",
+            "getState",
         ]);
         this.state = {
             tree: [],
@@ -25,15 +20,22 @@ class TreeList extends Component {
     }
 
     componentDidMount() {
-        TreeListStore.addChangeListener(this.onChange);
+        TreeLoaderStore.addChangeListener(this.onChange);
     }
 
     onChange() {
-        this.setState(getState());
+        this.setState(this.getState());
     }
 
     showDn() {
         TreeAction.displayDN(this.dn);
+        TreeAction.dropDownsInit(this.dn);
+    }
+
+    getState() {
+        return {
+            tree: TreeLoaderStore.getTree()
+        };
     }
 
     drawTree(tree) {
