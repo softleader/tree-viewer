@@ -16,7 +16,7 @@ class TreeHeaderStore extends EventEmitter {
     }
 
     setDn(dn) {
-        store.dn = dn;
+        store.dn =    dn;
     }
 
     getDn() {
