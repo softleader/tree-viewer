@@ -49,7 +49,7 @@ var server = new WebpackDevServer(compiler, {
 		app.get('/test', jsonParser, function(req, res) {
 			if (req.body == null) return res.sendStatus(400);
 			req.body.message = "select data success";
-			req.body.dns = ['1,'+req.query.dn, '2,'+req.query.dn, '3,'+req.query.dn];
+			req.body.dns = ['uid=1,'+req.query.dn, 'uid=2,'+req.query.dn, 'uid=3,'+req.query.dn];
 			console.log(req.body);
 			res.send(req.body);
 		});

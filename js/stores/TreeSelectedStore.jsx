@@ -5,8 +5,7 @@ import {EventEmitter} from 'events';
 import $ from "jquery";
 
 const store = {
-    parentDn: '',
-    childDns: []
+    dropDowns: []
 };
 
 class TreeSelectedStore extends EventEmitter {
@@ -18,11 +17,15 @@ class TreeSelectedStore extends EventEmitter {
         this.removeListener(TreeEvents.DROPDOWNS, callback);
     }
 
-    initFirstDropDowns(dn) {
-        store.parentDn = dn;
+    initParentDropDowns(dn) {
+        // 將 parent 的 dn 從陣列的前面放進去，將後面的切掉
+        // 因為 splice 會修改原先的陣列，因此利用 splice
+        store.dropDowns.splice(0);
+        store.dropDowns.push([dn]);
+        this.emit(TreeEvents.DROPDOWNS);
     }
 
-    initSecondDropDowns(dn) {
+    initChildDropDowns(dn) {
         const url = TreeLoaderStore.getDatas().url;
         $.ajax({
             url: url,
@@ -31,7 +34,12 @@ class TreeSelectedStore extends EventEmitter {
             type: 'GET',
             data: {dn: dn},
             success: function (data, textStatus, jqXHR) {
-                store.childDns = data.dns;
+                // 目前的傳入的 dn 是 match 到第幾個 dropDown
+                const index = store.dropDowns.findIndex(arr =>
+                    arr.find(v => v === dn)
+                )
+                store.dropDowns.splice(index + 1);
+                store.dropDowns.push(data.dns);
                 this.emit(TreeEvents.DROPDOWNS);
             }.bind(this),
             error: function (jqXHR, textStatus, errorThrown) {
@@ -40,13 +48,10 @@ class TreeSelectedStore extends EventEmitter {
         });
     }
 
-    getFirstDropDowns() {
-        return store.parentDn;
+    getDropDowns() {
+        return store.dropDowns;
     }
 
-    getSecondDropDowns() {
-        return store.childDns;
-    }
 
 }
 
@@ -59,8 +64,10 @@ AppDispatcher.register(payload => {
 
     switch (action.eventName) {
         case TreeEvents.DROPDOWNS:
-            treeSelectedStore.initFirstDropDowns(action.dn);
-            treeSelectedStore.initSecondDropDowns(action.dn);
+            treeSelectedStore.initParentDropDowns(action.dn);
+            break;
+        case TreeEvents.CHILDDROPDOWNS:
+            treeSelectedStore.initChildDropDowns(action.dn);
             break;
         default:
             break;

@@ -7,8 +7,6 @@ import FormControl from 'react-bootstrap/lib/FormControl';
 import FormGroup from 'react-bootstrap/lib/FormGroup';
 import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
 import Button from 'react-bootstrap/lib/Button';
-import ParentDownDrops from './ParentDownDrops.jsx';
-import ChildDownDrops from './ChildDownDrops.jsx';
 
 
 class TreeHeader extends Component {
@@ -58,22 +56,32 @@ class TreeHeader extends Component {
     }
 
     onSelect() {
-        TreeAction.dropDownsInit(this.state.dn);
+        TreeAction.initParentDropDowns(this.state.dn);
+    }
+
+    renderFunction(component) {
+        const buttonArray = [];
+        if(component.TreeList) {
+            buttonArray.push(<Button key="1" onClick={this.onAdd} bsStyle="primary">新增</Button>)
+            buttonArray.push(<Button key="2" onClick={this.onDelete} bsStyle="danger">刪除</Button>)
+        }
+        if(component.DropDown) {
+            buttonArray.push(<Button key="3" onClick={this.onSelect}>查詢</Button>);
+        }
+        return buttonArray;
     }
 
     render() {
         return (
             <div>
-                <h1>{this.props.context.name}</h1>
+                <h1>{this.props.name}</h1>
                 <div>
                     <FormGroup>
                         <FormControl value={this.state.dn} type="text" bsSize="sm"
                                      autoFocus placeholder="請輸入 DN" onChange={this.handleInputChange}/>
                     </FormGroup>
                     <ButtonToolbar>
-                        <Button onClick={this.onAdd} bsStyle="primary">新增</Button>
-                        <Button onClick={this.onDelete} bsStyle="danger">刪除</Button>
-                        <Button onClick={this.onSelect}>查詢</Button>
+                        {this.renderFunction(this.props.component)}
                     </ButtonToolbar>
                 </div>
             </div>
@@ -83,6 +91,10 @@ class TreeHeader extends Component {
 
 TreeHeader.defaultProps = {
     name: 'Tree',
+    component: {
+        DropDown: true,
+        TreeList: true
+    }
 };
 
 export default TreeHeader;

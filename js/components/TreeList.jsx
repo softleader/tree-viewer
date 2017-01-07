@@ -11,7 +11,6 @@ class TreeList extends Component {
         super(props);
         es6BindAll(this, [
             "onChange",
-            "drawTree",
             "getState",
         ]);
         this.state = {
@@ -29,7 +28,7 @@ class TreeList extends Component {
 
     showDn() {
         TreeAction.displayDN(this.dn);
-        TreeAction.dropDownsInit(this.dn);
+        TreeAction.initParentDropDowns(this.dn);
     }
 
     getState() {

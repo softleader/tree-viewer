@@ -30,9 +30,16 @@ export const TreeAction = {
         });
     },
 
-    dropDownsInit(dn) {
+    initParentDropDowns(dn) {
         AppDispatcher.handleViewAction({
             eventName: TreeEvents.DROPDOWNS,
+            dn: dn
+        });
+    },
+
+    initChildDropDowns(dn) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.CHILDDROPDOWNS,
             dn: dn
         });
     },
