@@ -56,7 +56,7 @@ class TreeLoaderStore extends EventEmitter {
      => [com,softleader,technology department,137]
      */
     processDnToTreeArray(dn) {
-        var treeArr = dn.split(",");
+        let treeArr = dn.split(",");
         return treeArr.map((v, i, a) => {
             return v = {
                 name: v.substr(v.indexOf("=") + 1),
@@ -69,7 +69,7 @@ class TreeLoaderStore extends EventEmitter {
     transformTreeArrayToObject(treeArr) {
         // 若原本 store.tree 陣列裡面沒有任何資料，則將此次輸入 tree 陣列放入
         if (store.tree.length == 0) {
-            var obj = this.createTreeObj(treeArr);
+            let obj = this.createTreeObj(treeArr);
             if (obj) {
                 store.tree.push(obj);
             }
@@ -77,11 +77,11 @@ class TreeLoaderStore extends EventEmitter {
         // 若原本 store.tree 陣列裡面有資料，則將此次輸入 tree 陣列比對是否有相同路徑，
         // 比對到不同的再產生新物件放入
         else if (treeArr) {
-            var tempArr = store.tree;
+            let tempArr = store.tree;
             // 已存在的陣列 match 到傳入的陣列第幾層
-            var level;
-            for (var i = 0; i < treeArr.length; i++) {
-                for (var j = 0; j < tempArr.length; j++) {
+            let level;
+            for (let i = 0; i < treeArr.length; i++) {
+                for (let j = 0; j < tempArr.length; j++) {
                     if (tempArr[j].dn === treeArr[i].dn) {
                         tempArr = tempArr[j].nodes;
                         level = i;
@@ -89,7 +89,7 @@ class TreeLoaderStore extends EventEmitter {
                     }
                 }
             }
-            var obj = this.createTreeObj(treeArr.slice(level + 1));
+            let obj = this.createTreeObj(treeArr.slice(level + 1));
             if (obj) {
                 tempArr.push(obj);
             }
@@ -100,15 +100,15 @@ class TreeLoaderStore extends EventEmitter {
     // type: 名字; dn: 完整路徑; nodes: 子節點
     createTreeObj(treeArr) {
         if (treeArr && treeArr.length > 0) {
-            var obj = new Object();
+            let obj = new Object();
             obj.type = treeArr[0].name;
             obj.dn = treeArr[0].dn;
             obj.nodes = [];
 
             if (treeArr.length > 1) {
-                var tempObj = obj;
-                for (var i = 1; i < treeArr.length; i++) {
-                    var childObj = new Object();
+                let tempObj = obj;
+                for (let i = 1; i < treeArr.length; i++) {
+                    let childObj = new Object();
                     childObj.type = treeArr[i].name;
                     childObj.dn = treeArr[i].dn;
                     childObj.nodes = [];
@@ -142,7 +142,7 @@ class TreeLoaderStore extends EventEmitter {
     }
 
     removeTree(treeArr, dn) {
-        for (var i = 0; i < treeArr.length; i++) {
+        for (let i = 0; i < treeArr.length; i++) {
             if (treeArr[i].nodes.length > 0) {
                 this.removeTree(treeArr[i].nodes, dn);
             }
@@ -174,7 +174,6 @@ AppDispatcher.register(payload => {
             treeLoaderStore.initDatas(action.context);
             treeLoaderStore.initTree();
             treeLoaderStore.emit(TreeEvents.TREE_LIST);
-
             break;
         case TreeEvents.TREE_ADD:
             treeLoaderStore.addTree(action.dn);

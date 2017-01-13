@@ -17,16 +17,20 @@ class TreeSelectedStore extends EventEmitter {
         this.removeListener(TreeEvents.DROPDOWNS, callback);
     }
 
-    initParentDropDowns(dn) {
+    initDropDowns(dn) {
         // 將 parent 的 dn 從陣列的前面放進去，將後面的切掉
         // 因為 splice 會修改原先的陣列，因此利用 splice
-        store.dropDowns.splice(0);
-        store.dropDowns.push([dn]);
-        this.emit(TreeEvents.DROPDOWNS);
+        if (dn) {
+            store.dropDowns.splice(0);
+            store.dropDowns.push([dn]);
+            this.initChildDropDowns(dn);
+        } else {
+            return;
+        }
     }
 
     initChildDropDowns(dn) {
-        const url = TreeLoaderStore.getDatas().url;
+        let url = TreeLoaderStore.getDatas().url;
         $.ajax({
             url: url,
             dataType: 'json',
@@ -35,7 +39,7 @@ class TreeSelectedStore extends EventEmitter {
             data: {dn: dn},
             success: function (data, textStatus, jqXHR) {
                 // 目前的傳入的 dn 是 match 到第幾個 dropDown
-                const index = store.dropDowns.findIndex(arr =>
+                let index = store.dropDowns.findIndex(arr =>
                     arr.find(v => v === dn)
                 )
                 store.dropDowns.splice(index + 1);
@@ -64,7 +68,7 @@ AppDispatcher.register(payload => {
 
     switch (action.eventName) {
         case TreeEvents.DROPDOWNS:
-            treeSelectedStore.initParentDropDowns(action.dn);
+            treeSelectedStore.initDropDowns(action.dn);
             break;
         case TreeEvents.CHILDDROPDOWNS:
             treeSelectedStore.initChildDropDowns(action.dn);

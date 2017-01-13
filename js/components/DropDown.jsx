@@ -42,9 +42,8 @@ class DropDown extends Component {
             <div>
                 {
                     this.state.dropDowns.map((arr, i) => {
-                        console.log(arr)
                         return (
-                            <SplitButton key={i} title='DropDown' id={"drop-downs" + i}>
+                            <SplitButton key={i} title={arr[0]} id={"drop-downs" + i}>
                                 {
                                     arr.map((dn, j) => {
                                         return (
