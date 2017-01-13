@@ -25,7 +25,6 @@ class TreeHeader extends Component {
     }
 
     componentDidMount() {
-        TreeLoaderStore.initTree(this.props.context);
         TreeHeaderStore.addChangeListener(this.onChange);
     }
 

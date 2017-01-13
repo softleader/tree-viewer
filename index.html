@@ -19,10 +19,12 @@
     <script src="http://localhost:3000/webpack-dev-server.js"></script>
     <script>
         react.renderTree({
-            initUrl: "http://localhost:3000/findAll",
             url: "http://localhost:3000/test",
             name: "TREE",
-            dn: "dc=softleader,dc=com",
+            initTreeDatas: ['uid=137,organizationName=technology department,dc=softleader,dc=com'
+                ,'uid=138,organizationName=technology department,dc=softleader,dc=com'
+                ,'uid=138,organizationName=technology department,dc=softleader,dc=com1'
+                ,'uid=139,organizationName=technology department,dc=softleader,dc=com'],
 //            component: {
 //                DropDown: true,
 //                TreeList: true

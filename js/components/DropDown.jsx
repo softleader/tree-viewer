@@ -4,7 +4,7 @@ import TreeSelectedStore from '../stores/TreeSelectedStore.jsx';
 import es6BindAll from "es6bindall";
 import SplitButton from 'react-bootstrap/lib/SplitButton';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
-
+import $ from "jquery";
 
 class DropDown extends Component {
     constructor(props) {
@@ -42,8 +42,9 @@ class DropDown extends Component {
             <div>
                 {
                     this.state.dropDowns.map((arr, i) => {
+                        console.log(arr)
                         return (
-                            <SplitButton key={i} title="DropDown" id={"drop-downs" + i}>
+                            <SplitButton key={i} title='DropDown' id={"drop-downs" + i}>
                                 {
                                     arr.map((dn, j) => {
                                         return (

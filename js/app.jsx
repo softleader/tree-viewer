@@ -18,7 +18,7 @@ class TreeApp extends React.Component {
             componentArray.push(<DropDown key="1"/>);
         }
         if(!component || component.TreeList) {
-            componentArray.push(<TreeList key="2"/>);
+            componentArray.push(<TreeList context={this.props.context} key="2"/>);
         }
         return componentArray;
     }
@@ -27,7 +27,7 @@ class TreeApp extends React.Component {
         return (
             <div>
                 {console.log(this.props.context)}
-                <TreeHeader context={this.props.context} name={this.props.context.name}
+                <TreeHeader name={this.props.context.name}
                             component={this.props.context.component}/>
                 {
                     this.renderFunction(this.props.context.component)

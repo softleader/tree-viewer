@@ -9,7 +9,7 @@ const store = {
 };
 
 const _datas = {
-    initUrl: null,
+    initTreeDatas: null,
     url: null,
     dn: null,
 };
@@ -23,24 +23,14 @@ class TreeLoaderStore extends EventEmitter {
         this.removeListener(TreeEvents.TREE_LIST, callback);
     }
 
-    initTree(context) {
-        _datas.initUrl = context.initUrl;
+    initDatas(context) {
+        _datas.initTreeDatas = context.initTreeDatas;
         _datas.url = context.url;
         _datas.dn = context.dn;
-        $.ajax({
-            url: _datas.initUrl,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            type: 'GET',
-            data: {dn: context.dn},
-            success: function (data, textStatus, jqXHR) {
-                data.dns.forEach(dn => this.transformTreeArrayToObject(this.processDnToTreeArray(dn)));
-                this.emit(TreeEvents.TREE_LIST);
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error(errorThrown);
-            }
-        });
+    }
+
+    initTree() {
+        _datas.initTreeDatas.forEach(dn => this.transformTreeArrayToObject(this.processDnToTreeArray(dn)));
     }
 
     addTree(dn) {
@@ -181,7 +171,10 @@ AppDispatcher.register(payload => {
 
     switch (action.eventName) {
         case TreeEvents.TREE_INIT:
-            treeLoaderStore.initTree(action.context);
+            treeLoaderStore.initDatas(action.context);
+            treeLoaderStore.initTree();
+            treeLoaderStore.emit(TreeEvents.TREE_LIST);
+
             break;
         case TreeEvents.TREE_ADD:
             treeLoaderStore.addTree(action.dn);

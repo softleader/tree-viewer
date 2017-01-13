@@ -20,6 +20,7 @@ class TreeList extends Component {
 
     componentDidMount() {
         TreeLoaderStore.addChangeListener(this.onChange);
+        TreeAction.initTree(this.props.context);
     }
 
     onChange() {
@@ -28,7 +29,7 @@ class TreeList extends Component {
 
     showDn() {
         TreeAction.displayDN(this.dn);
-        TreeAction.initParentDropDowns(this.dn);
+        // TreeAction.initParentDropDowns(this.dn);
     }
 
     getState() {
