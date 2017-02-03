@@ -42,7 +42,7 @@ class TreeSelectedStore extends EventEmitter {
     initChildDropDowns(dn) {
         let getAjaxObj = TreeLoaderStore.getTreeConfig().getAjaxObj;
         let getObj = JSON.parse(JSON.stringify(getAjaxObj));
-        getObj.data = getObj.data ? getObj.data : JSON.stringify({dn: dn});
+        getObj.data = getAjaxObj.data ? getAjaxObj.data : {dn: dn};
 
         getObj.success = function (data, textStatus, jqXHR) {
             getAjaxObj.success(data, textStatus, jqXHR);
