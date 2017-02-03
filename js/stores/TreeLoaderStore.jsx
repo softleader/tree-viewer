@@ -8,10 +8,11 @@ const store = {
 
 };
 
-const _datas = {
+const treeConfig = {
     initTreeDatas: null,
-    url: null,
-    dn: null,
+    getAjaxObj: null,
+    deleteAjaxObj: null,
+    postAjaxObj: null,
 };
 
 class TreeLoaderStore extends EventEmitter {
@@ -24,31 +25,34 @@ class TreeLoaderStore extends EventEmitter {
     }
 
     initDatas(context) {
-        _datas.initTreeDatas = context.initTreeDatas;
-        _datas.url = context.url;
-        _datas.dn = context.dn;
+        treeConfig.initTreeDatas = context.initTreeDatas;
+        treeConfig.url = context.url;
+        treeConfig.dn = context.dn;
+        treeConfig.getAjaxObj = context.getAjaxObj;
+        treeConfig.deleteAjaxObj = context.deleteAjaxObj;
+        treeConfig.postAjaxObj = context.postAjaxObj;
     }
 
     initTree() {
-        _datas.initTreeDatas.forEach(dn => this.transformTreeArrayToObject(this.processDnToTreeArray(dn)));
+        treeConfig.initTreeDatas.forEach(dn => this.transformTreeArrayToObject(this.processDnToTreeArray(dn)));
     }
 
+    /**
+     * 新增節點：
+     * 新增 tree 節點的 ajax 由使用者傳入。
+     * 利用 JSON 的 method 將傳入的物件轉成字串後再轉回物件(deep clone)，以免被 referrence 到
+     * @param dn
+     */
     addTree(dn) {
-        $.ajax({
-            url: _datas.url,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            type: 'POST',
-            data: JSON.stringify({dn: dn}),
-            success: function (data, textStatus, jqXHR) {
-                // console.log(data.dn);
-                this.transformTreeArrayToObject(this.processDnToTreeArray(data.dn));
-                this.emit(TreeEvents.TREE_LIST);
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error(errorThrown);
-            }
-        });
+        let postObj = JSON.parse(JSON.stringify(treeConfig.postAjaxObj));
+        postObj.data = postObj.data ? postObj.data : JSON.stringify({dn: dn});
+
+        postObj.success = function (data, textStatus, jqXHR) {
+            treeConfig.postAjaxObj.success(data, textStatus, jqXHR);
+            this.transformTreeArrayToObject(this.processDnToTreeArray(data.dn));
+            this.emit(TreeEvents.TREE_LIST);
+        }.bind(this);
+        $.ajax(postObj);
     }
 
     /* 將 LDAP 的 DN 字串切成陣列，並且拿掉 RDN，只留 name，再從 domain 大的排到小
@@ -121,26 +125,29 @@ class TreeLoaderStore extends EventEmitter {
         }
     }
 
+    /**
+     * 刪除節點：
+     * 刪除 tree 節點的 ajax 由使用者傳入。
+     * 利用 JSON 的 method 將傳入的物件轉成字串後再轉回物件(deep clone)，以免被 referrence 到
+     * @param dn
+     */
     deleteTree(dn) {
-        $.ajax({
-            url: _datas.url,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            type: 'DELETE',
-            data: JSON.stringify({dn: dn}),
-            success: function (data, textStatus, jqXHR) {
-                if (data.isDelete) {
-                    console.log(data.dn)
-                    this.removeTree(store.tree, data.dn);
-                    this.emit(TreeEvents.TREE_LIST);
-                }
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error(errorThrown);
-            }
-        });
+        let deleteObj = JSON.parse(JSON.stringify(treeConfig.deleteAjaxObj));
+        deleteObj.data = deleteObj.data ? deleteObj.data : JSON.stringify({dn: dn});
+        deleteObj.success = function (data, textStatus, jqXHR) {
+            treeConfig.deleteAjaxObj.success(data, textStatus, jqXHR);
+            this.removeTree(store.tree, data.dn);
+            this.emit(TreeEvents.TREE_LIST);
+        }.bind(this);
+
+        $.ajax(deleteObj);
     }
 
+    /**
+     * 移除 treeArr 陣列裡面的 dn 這個節點
+     * @param treeArr
+     * @param dn
+     */
     removeTree(treeArr, dn) {
         for (let i = 0; i < treeArr.length; i++) {
             if (treeArr[i].nodes.length > 0) {
@@ -157,8 +164,8 @@ class TreeLoaderStore extends EventEmitter {
         return store.tree;
     }
 
-    getDatas() {
-        return _datas;
+    getTreeConfig() {
+        return treeConfig;
     }
 }
 

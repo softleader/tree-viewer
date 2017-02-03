@@ -17,6 +17,10 @@ class TreeSelectedStore extends EventEmitter {
         this.removeListener(TreeEvents.DROPDOWNS, callback);
     }
 
+    /**
+     * 利用傳入的 dn 初始化下拉式選單
+     * @param dn
+     */
     initDropDowns(dn) {
         // 將 parent 的 dn 從陣列的前面放進去，將後面的切掉
         // 因為 splice 會修改原先的陣列，因此利用 splice
@@ -28,28 +32,30 @@ class TreeSelectedStore extends EventEmitter {
             return;
         }
     }
-
+    /**
+     * initial tree 節點的下拉式選單：
+     * 搜尋此 dn 底下的節點。
+     * ajax 由使用者傳入：
+     * 利用 JSON 的 method 將傳入的物件轉成字串後再轉回物件(deep clone)，以免被 referrence 到
+     * @param dn
+     */
     initChildDropDowns(dn) {
-        let url = TreeLoaderStore.getDatas().url;
-        $.ajax({
-            url: url,
-            dataType: 'json',
-            contentType: 'application/json; charset=UTF-8',
-            type: 'GET',
-            data: {dn: dn},
-            success: function (data, textStatus, jqXHR) {
-                // 目前的傳入的 dn 是 match 到第幾個 dropDown
-                let index = store.dropDowns.findIndex(arr =>
-                    arr.find(v => v === dn)
-                )
-                store.dropDowns.splice(index + 1);
-                store.dropDowns.push(data.dns);
-                this.emit(TreeEvents.DROPDOWNS);
-            }.bind(this),
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.error(errorThrown);
-            }
-        });
+        let getAjaxObj = TreeLoaderStore.getTreeConfig().getAjaxObj;
+        let getObj = JSON.parse(JSON.stringify(getAjaxObj));
+        getObj.data = getObj.data ? getObj.data : JSON.stringify({dn: dn});
+
+        getObj.success = function (data, textStatus, jqXHR) {
+            getAjaxObj.success(data, textStatus, jqXHR);
+            // 比對目前的傳入的 dn 是 match 到第幾個下拉式選單（第幾個節點）
+            let index = store.dropDowns.findIndex(arr =>
+                arr.find(v => v === dn)
+            )
+            // 將比對到的節點底下的下拉式選單從陣列刪除，並且將此 dn 底下的節點放入
+            store.dropDowns.splice(index + 1);
+            store.dropDowns.push(data.dns);
+            this.emit(TreeEvents.DROPDOWNS);
+        }.bind(this);
+        $.ajax(getObj);
     }
 
     getDropDowns() {
