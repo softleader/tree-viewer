@@ -43,7 +43,7 @@ class TreeSelectedStore extends EventEmitter {
         let getAjaxObj = TreeLoaderStore.getTreeConfig().getAjaxObj;
         let getObj = JSON.parse(JSON.stringify(getAjaxObj));
         getObj.data = getAjaxObj.data ? getAjaxObj.data : {dn: dn};
- 
+
         getObj.success = function (data, textStatus, jqXHR) {
             getAjaxObj.success(data, textStatus, jqXHR);
             // 比對目前的傳入的 dn 是 match 到第幾個下拉式選單（第幾個節點）
