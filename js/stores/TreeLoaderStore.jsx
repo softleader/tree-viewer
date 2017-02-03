@@ -101,11 +101,11 @@ class TreeLoaderStore extends EventEmitter {
     }
 
     // 將 tree 陣列轉換成 treeview-react-bootstrap 規定的物件格式
-    // type: 名字; dn: 完整路徑; nodes: 子節點
+    // name: 名字; dn: 完整路徑; nodes: 子節點
     createTreeObj(treeArr) {
         if (treeArr && treeArr.length > 0) {
             let obj = new Object();
-            obj.type = treeArr[0].name;
+            obj.name = treeArr[0].name;
             obj.dn = treeArr[0].dn;
             obj.nodes = [];
 
@@ -113,7 +113,7 @@ class TreeLoaderStore extends EventEmitter {
                 let tempObj = obj;
                 for (let i = 1; i < treeArr.length; i++) {
                     let childObj = new Object();
-                    childObj.type = treeArr[i].name;
+                    childObj.name = treeArr[i].name;
                     childObj.dn = treeArr[i].dn;
                     childObj.nodes = [];
                     tempObj.nodes.push(childObj);
