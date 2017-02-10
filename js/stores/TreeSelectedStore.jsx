@@ -5,7 +5,6 @@ import {EventEmitter} from 'events';
 import $ from "jquery";
 
 const store = {
-    // 儲存 dropDowns 的物件陣列
     dropDowns: []
 };
 
