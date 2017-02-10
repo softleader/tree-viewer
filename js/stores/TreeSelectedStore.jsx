@@ -5,6 +5,7 @@ import {EventEmitter} from 'events';
 import $ from "jquery";
 
 const store = {
+    // 儲存 dropDowns 的物件陣列
     dropDowns: []
 };
 
@@ -22,11 +23,8 @@ class TreeSelectedStore extends EventEmitter {
      * @param dn
      */
     initDropDowns(dn) {
-        // 將 parent 的 dn 從陣列的前面放進去，將後面的切掉
-        // 因為 splice 會修改原先的陣列，因此利用 splice
         if (dn) {
-            store.dropDowns.splice(0);
-            store.dropDowns.push([dn]);
+            store.dropDowns = [[dn]];
             this.initChildDropDowns(dn);
         } else {
             return;
@@ -50,9 +48,11 @@ class TreeSelectedStore extends EventEmitter {
             let index = store.dropDowns.findIndex(arr =>
                 arr.find(v => v === dn)
             )
-            // 將比對到的節點底下的下拉式選單從陣列刪除，並且將此 dn 底下的節點放入
+            // 將比對到節點底下的下拉式選單從陣列刪除，並且將此 dn 底下的 dn 陣列放入
             store.dropDowns.splice(index + 1);
-            store.dropDowns.push(data.dns);
+            if(data.dns) {
+                store.dropDowns.push(data.dns);
+            }
             this.emit(TreeEvents.DROPDOWNS);
         }.bind(this);
         $.ajax(getObj);

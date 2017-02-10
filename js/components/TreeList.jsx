@@ -59,6 +59,7 @@ class TreeList extends Component {
     drawTree(tree) {
         return tree.map((node, i) => {
             let dn = node.dn;
+            let type = node.type;
             let name = node.name;
             let popoverClick = (
                 <Popover id={"popover-trigger-click" + name} title={"新增 " + name + " 底下節點"}>
@@ -76,8 +77,8 @@ class TreeList extends Component {
                 <ListGroupItem bsClass="list-group-item list-group-display"
                                href="#" onClick={this.showDn.bind(node)}>
                     <span className="badge">{node.nodes.length}</span>
-                    <OverlayTrigger trigger={['click']} placement="right" overlay={popoverClick}>
-                        <span className="node">{name}</span>
+                    <OverlayTrigger trigger={['click']} rootClose placement="right" overlay={popoverClick}>
+                        <span className="node">{type}: {name}</span>
                     </OverlayTrigger>
                 </ListGroupItem>
 

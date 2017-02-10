@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {TreeAction} from '../actions/TreeAction.jsx';
 import TreeSelectedStore from '../stores/TreeSelectedStore.jsx';
 import es6BindAll from "es6bindall";
-import SplitButton from 'react-bootstrap/lib/SplitButton';
+import Dropdown from 'react-bootstrap/lib/Dropdown';
+import Button from 'react-bootstrap/lib/Button';
 import MenuItem from 'react-bootstrap/lib/MenuItem';
 import $ from "jquery";
 
@@ -32,9 +33,15 @@ class DropDown extends Component {
         };
     }
 
-    initChildDownDrop(parentDn) {
-        TreeAction.initChildDropDowns(parentDn);
-        TreeAction.displayDN(parentDn);
+    initChildDownDrop(parentObj) {
+        let id = '#' + parentObj.splitButtonId;
+        $(id).text(parentObj.dn);
+        TreeAction.initChildDropDowns(parentObj.dn);
+        TreeAction.displayDN(parentObj.dn);
+    }
+
+    displayDn() {
+        TreeAction.displayDN(this);
     }
 
     render() {
@@ -43,16 +50,23 @@ class DropDown extends Component {
                 {
                     this.state.dropDowns.map((arr, i) => {
                         return (
-                            <SplitButton key={i} title={arr[0]} id={"drop-downs" + i}>
-                                {
-                                    arr.map((dn, j) => {
-                                        return (
-                                            <MenuItem key={j} eventKey={dn}
-                                                      onSelect={this.initChildDownDrop}>{dn}</MenuItem>
-                                        )
-                                    })
-                                }
-                            </SplitButton>
+                            <Dropdown key={i} id={"drop-downs" + i}>
+                                <Button id={"drop-downs-button" + i}
+                                        onClick={this.displayDn.bind($('#drop-downs-button' + i).text() || arr[0])}>
+                                    {arr[0]}
+                                </Button>
+                                <Dropdown.Toggle/>
+                                <Dropdown.Menu className="super-colors">
+                                    {
+                                        arr.map((dn, j) => {
+                                            return (
+                                                <MenuItem key={j} eventKey={{dn: dn, splitButtonId: "drop-downs-button" + i}}
+                                                          onSelect={this.initChildDownDrop}>{dn}</MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Dropdown.Menu>
+                            </Dropdown>
                         )
                     })
                 }

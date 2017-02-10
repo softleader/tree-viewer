@@ -13,6 +13,7 @@ const treeConfig = {
     getAjaxObj: null,
     deleteAjaxObj: null,
     postAjaxObj: null,
+    typeMapping: {},
 };
 
 class TreeLoaderStore extends EventEmitter {
@@ -31,6 +32,7 @@ class TreeLoaderStore extends EventEmitter {
         treeConfig.getAjaxObj = context.getAjaxObj;
         treeConfig.deleteAjaxObj = context.deleteAjaxObj;
         treeConfig.postAjaxObj = context.postAjaxObj;
+        treeConfig.typeMapping = context.typeMapping;
     }
 
     initTree() {
@@ -55,15 +57,20 @@ class TreeLoaderStore extends EventEmitter {
         $.ajax(postObj);
     }
 
-    /* 將 LDAP 的 DN 字串切成陣列，並且拿掉 RDN，只留 name，再從 domain 大的排到小
-     ex: DN:uid=137,organizationName=technology department,dc=softleader,dc=com
-     => [com,softleader,technology department,137]
+    /* 將 LDAP 的 DN 字串組成物件陣列，從 domain 大的排到小
+     ex: DN:uid=137,ou=technology department,dc=softleader,dc=com
+     => [{type: dc, name: com, dn: dc=com},
+     {type: dc, name: softleader, dn: dc=softleader,dc=com},
+     {type: ou, name: technology department, dn: ou=technology department,dc=softleader,dc=com},
+     {type: uid, name: 137, dn: uid=137,ou=technology department,dc=softleader,dc=com}]
      */
     processDnToTreeArray(dn) {
         let treeArr = dn.split(",");
         return treeArr.map((v, i, a) => {
+            let type = v.substring(0, v.indexOf("="));
             return v = {
-                name: v.substr(v.indexOf("=") + 1),
+                type: treeConfig.typeMapping[type] || type,
+                name: v.substring(v.indexOf("=") + 1),
                 dn: treeArr.slice(i).toString()
             };
         }).reverse();
@@ -101,10 +108,11 @@ class TreeLoaderStore extends EventEmitter {
     }
 
     // 將 tree 陣列轉換成 treeview-react-bootstrap 規定的物件格式
-    // name: 名字; dn: 完整路徑; nodes: 子節點
+    // type: 公司、人員..., name: 名字; dn: 完整路徑; nodes: 子節點
     createTreeObj(treeArr) {
         if (treeArr && treeArr.length > 0) {
             let obj = new Object();
+            obj.type = treeArr[0].type;
             obj.name = treeArr[0].name;
             obj.dn = treeArr[0].dn;
             obj.nodes = [];
@@ -113,6 +121,7 @@ class TreeLoaderStore extends EventEmitter {
                 let tempObj = obj;
                 for (let i = 1; i < treeArr.length; i++) {
                     let childObj = new Object();
+                    childObj.type = treeArr[i].type;
                     childObj.name = treeArr[i].name;
                     childObj.dn = treeArr[i].dn;
                     childObj.nodes = [];
