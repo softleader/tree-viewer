@@ -61,11 +61,18 @@
             DropDown: true,
             TreeList: true
         },
-        typeMapping: {
+        rdnMapping: {
             uid: '人員',
             ou: '組織'
         }
     });
+
+    setTimeout(function() {
+        react.initTreeDatas(['uid=1,ou=technology department,dc=softleader,dc=com2'
+            , 'uid=2,ou=technology department,dc=softleader,dc=com3'
+            , 'uid=1,ou=technology department,dc=softleader,dc=com4'
+            , 'uid=3,ou=technology department,dc=softleader,dc=com5'])
+    }, 1500);
 </script>
 </body>
 

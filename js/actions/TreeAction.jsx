@@ -9,6 +9,13 @@ export const TreeAction = {
         });
     },
 
+    initTreeDatas(dataArray) {
+        AppDispatcher.handleViewAction({
+            eventName: TreeEvents.TREE_DATAS_INIT,
+            dataArray: dataArray
+        });
+    },
+
     addDN(dn) {
         AppDispatcher.handleViewAction({
             eventName: TreeEvents.TREE_ADD,

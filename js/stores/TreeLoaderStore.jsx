@@ -13,7 +13,7 @@ const treeConfig = {
     getAjaxObj: null,
     deleteAjaxObj: null,
     postAjaxObj: null,
-    typeMapping: {},
+    rdnMapping: {},
 };
 
 class TreeLoaderStore extends EventEmitter {
@@ -26,13 +26,14 @@ class TreeLoaderStore extends EventEmitter {
     }
 
     initDatas(context) {
-        treeConfig.initTreeDatas = context.initTreeDatas;
-        treeConfig.url = context.url;
-        treeConfig.dn = context.dn;
-        treeConfig.getAjaxObj = context.getAjaxObj;
-        treeConfig.deleteAjaxObj = context.deleteAjaxObj;
-        treeConfig.postAjaxObj = context.postAjaxObj;
-        treeConfig.typeMapping = context.typeMapping;
+        store.tree = [];
+        treeConfig.initTreeDatas = context.initTreeDatas ? context.initTreeDatas : treeConfig.initTreeDatas;
+        treeConfig.url = context.url ? context.url : treeConfig.url;
+        treeConfig.dn = context.dn ? context.dn : treeConfig.dn;
+        treeConfig.getAjaxObj = context.getAjaxObj ? context.getAjaxObj : treeConfig.getAjaxObj;
+        treeConfig.deleteAjaxObj = context.deleteAjaxObj ? context.deleteAjaxObj : treeConfig.deleteAjaxObj;
+        treeConfig.postAjaxObj = context.postAjaxObj ? context.postAjaxObj : treeConfig.postAjaxObj;
+        treeConfig.rdnMapping = context.rdnMapping ? context.rdnMapping : treeConfig.rdnMapping;
     }
 
     initTree() {
@@ -69,7 +70,7 @@ class TreeLoaderStore extends EventEmitter {
         return treeArr.map((v, i, a) => {
             let type = v.substring(0, v.indexOf("="));
             return v = {
-                type: treeConfig.typeMapping[type] || type,
+                type: treeConfig.rdnMapping[type] || type,
                 name: v.substring(v.indexOf("=") + 1),
                 dn: treeArr.slice(i).toString()
             };
@@ -188,6 +189,11 @@ AppDispatcher.register(payload => {
     switch (action.eventName) {
         case TreeEvents.TREE_INIT:
             treeLoaderStore.initDatas(action.context);
+            treeLoaderStore.initTree();
+            treeLoaderStore.emit(TreeEvents.TREE_LIST);
+            break;
+        case TreeEvents.TREE_DATAS_INIT:
+            treeLoaderStore.initDatas({initTreeDatas: action.dataArray});
             treeLoaderStore.initTree();
             treeLoaderStore.emit(TreeEvents.TREE_LIST);
             break;

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import TreeHeader from './components/TreeHeader.jsx';
 import DropDown from './components/DropDown.jsx';
 import TreeList from './components/TreeList.jsx';
+import {TreeAction} from './actions/TreeAction.jsx';
 
 window.react = {};
 
@@ -41,3 +42,7 @@ class TreeApp extends React.Component {
 react.renderTree = function (contextObj) {
     ReactDOM.render(<TreeApp context={contextObj}/>, document.getElementById('showTree'));
 };
+
+react.initTreeDatas = function(dataArray) {
+    return TreeAction.initTreeDatas(dataArray);
+}

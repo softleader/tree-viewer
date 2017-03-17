@@ -43,7 +43,7 @@
 
 ### `npm install`
 
-將元件所依賴的module全下下載齊全
+將元件所依賴的module全部下載齊全
 
 ### `npm run watch`
 
@@ -94,7 +94,28 @@
 </body>
 ```
 
+#### contextObj 參數
+
+
+| Field        | Required? | Type | Description |
+| ------------ |-----------|------|-------------|
+| name | N | String | 這個 tree 的名字 |
+| getAjaxObj | Y | Object | ajax 中 get 方法的 json 資料。依照傳入的 dn 搜尋底下所有的 dn，需回傳陣列。|
+| deleteAjaxObj | Y | Object | ajax 中 delete 方法的 json 資料。依照傳入的 dn 將此 dn 刪除。|
+| postAjaxObj | Y | Object | ajax 中 post 方法的 json 資料。依照傳入的 dn 新增此 dn。|
+| initTreeDatas | N | Array | 一開始預先 initial 的 tree 陣列。|
+| component | N | Object | 目前此物件有兩個參數。一個是 DropDown，另一個是 TreeList。若設定 DropDown: true 代表要顯示 DropDwon 這個 component。預設都是 true|
+| rdnMapping | Y | Obj | 每一個 rdn 對應的中文名稱。如： {uid: 人員, ou: 組織}|
+
+
 ## API
+
+目前提供的 method:
+
+| Method Name | Input | Type | Description |
+| -------- |----------|------|-------------|
+| react.initTreeDatas | [dn1,dn2,...] | array | 重新 initial 整個 tree 的 dn 陣列|
+
 
 
 ## Q&A
